@@ -1,9 +1,9 @@
 import express from "express";
 import cors from 'cors';
-import mongoose from "mongoose";
 import dotenv from "dotenv";
 import ethRoutes from "./routes/ethRoutes";
 import authRoutes from "./routes/authRoutes";
+import { connectDB } from "./config/db";
 
 dotenv.config();
 
@@ -16,13 +16,9 @@ app.use(express.json());
 app.use("/api", ethRoutes);
 app.use('/api/auth', authRoutes);
 
-mongoose.connect('mongodb://root:password@localhost:27017/ethcrawler?authSource=admin')
-  .then(() => {
-    console.log("Connected to MongoDB");
-    app.listen(port, () => {
-      console.log(`Server running at http://localhost:${port}`);
-    });
-  })
-  .catch(err => {
-    console.error("MongoDB connection error:", err);
+// Connect to DB and start server
+connectDB().then(() => {
+  app.listen(port, () => {
+    console.log(`Server is running on http://localhost:${port}`);
   });
+});
